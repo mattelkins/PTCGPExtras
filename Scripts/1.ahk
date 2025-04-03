@@ -890,7 +890,7 @@ CheckPack() {
 
 	; Wait until cards are rendered
 	FindImageAndClick(125, 501, 151, 511, , "Next1", 135, 440)
-	Delay(1)
+	Delay(2)
 
 	iCurrentPackCount++
 
