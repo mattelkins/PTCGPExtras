@@ -1614,6 +1614,7 @@ DoTutorial() {
 		; Attempt to pick a user name
 		username := createAccount()
 		adbInput(username)
+		Delay(1)
 
 		; Click through until return button on open pack
 		if(FindImageAndClick(121, 490, 161, 520, , "Return", 185, 372, , 10))
