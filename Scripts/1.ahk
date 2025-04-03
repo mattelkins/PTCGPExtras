@@ -943,6 +943,13 @@ FindBorders(prefix) {
 		,[196, 284, 249, 286]
 		,[70, 399, 123, 401]
 		,[155, 399, 208, 401]]
+	if (prefix = "shiny1star" || prefix = "shiny2star") {
+		borderCoords := [[90, 261, 93, 283]
+		,[173, 261, 176, 283]
+		,[255, 261, 258, 283]
+		,[130, 376, 133, 398]
+		,[215, 376, 218, 398]]
+	}
 	pBitmap := from_window(WinExist(winTitle))
 	; imagePath := "C:\Users\Arturo\Desktop\PTCGP\GPs\" . Clipboard . ".png"
 	; pBitmap := Gdip_CreateBitmapFromFile(imagePath)
@@ -991,18 +998,12 @@ FindGodPack() {
 			CreateStatusMessage("Not a God Pack ")
 			break
 		} else {
-			; foundImmersive := FindBorders("immersive")
-			; foundCrown := FindBorders("crown")
-			; if(foundImmersive || foundCrown) {
-			; 	invalidGP := true
-			; }
-			; if(!invalidGP && minStars > 0) {
-			; 	starCount := 5 - FindBorders("1star")
-			; 	if(starCount < minStars) {
-			; 		CreateStatusMessage("Does not meet minimum 2 star threshold.")
-			; 		invalidGP := true
-			; 	}
-			; }
+			foundShiny := FindBorders("shiny2star") + FindBorders("shiny1star")
+			foundImmersive := FindBorders("immersive")
+			foundCrown := FindBorders("crown")
+			if(foundImmersive || foundCrown || foundShiny) {
+				invalidGP := true
+			}
 			if(invalidGP) {
 				GodPackFound("Invalid")
 				RemoveFriends(friendsAdded)
