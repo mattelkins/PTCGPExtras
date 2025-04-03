@@ -81,10 +81,7 @@ rerollTime := A_TickCount
 Loop {
 
 	friended := false
-
-	if (bHeartBeat)
-		IniWrite, 1, %A_ScriptDir%\..\HeartBeat.ini, HeartBeat, Instance%scriptName%
-
+	IniWrite, 1, %A_ScriptDir%\..\HeartBeat.ini, HeartBeat, Instance%scriptName%
 	FormatTime, CurrentTime,, HHmm
 
 	StartTime := changeDate - 45 ; 12:55 AM2355
@@ -741,7 +738,7 @@ menuDelete() {
 	Sleep,%iGeneralDelay%
 	FindImageAndClick(24, 158, 57, 189, , "Account", 140, 440, 2000) ;wait for other menu
 	Sleep,%iGeneralDelay%
-	FindImageAndClick(56, 312, 108, 334, , "Account2", 79, 256, 1000) ;wait for account menu
+	FindImageAndClick(56, 435, 108, 460, , "Account2", 79, 256, 1000) ;wait for account menu
 	Sleep,%iGeneralDelay%
 
 	failSafe := A_TickCount
@@ -758,7 +755,7 @@ menuDelete() {
 					adbClick(pos1, pos2)
 				}
 				else {
-					adbClick(145, 446)
+					adbClick(230, 506)
 				}
 				Delay(1)
 				failSafeTime := (A_TickCount - failSafe) // 1000
@@ -806,7 +803,7 @@ menuDeleteStart() {
 		}
 		else if(FindOrLoseImage(20, 120, 50, 150, , "Menu", 0, failSafeTime)) { ; if the clicks in the top right open up the game settings menu then continue to delete account
 			Sleep,%iGeneralDelay%
-			FindImageAndClick(56, 312, 108, 334, , "Account2", 79, 256, 1000) ;wait for account menu
+			FindImageAndClick(56, 435, 108, 460, , "Account2", 79, 256, 1000) ;wait for account menu
 			Sleep,%iGeneralDelay%
 			failSafe := A_TickCount
 			failSafeTime := 0
@@ -819,7 +816,7 @@ menuDeleteStart() {
 						adbClick(pos1, pos2)
 					}
 					else {
-						adbClick(145, 446)
+						adbClick(230, 506)
 					}
 					Delay(1)
 					failSafeTime := (A_TickCount - failSafe) // 1000
@@ -886,7 +883,7 @@ SplashStatus(sStatus) {
 }
 
 CheckPack() {
-	global iCurrentPackCount, iPackScore, iMinPackVal, scriptName, username, friendCode, accountFile
+	global iCurrentPackCount, iPackScore, iMinPackVal, bTradeMode, scriptName, username, friendCode, accountFile
 
 	; Wait until cards are rendered
 	FindImageAndClick(125, 501, 151, 511, , "Next1", 135, 440)
@@ -897,6 +894,24 @@ CheckPack() {
 	; Identify the cards in the pack, log them, and determine if you should keep the pack or continue
 	aOpenedPack := identifyCards()
 	; MsgBox, % "Matched Cards: " . aOpenedPack[1] . ", " . aOpenedPack[2] . ", " . aOpenedPack[3] . ", " . aOpenedPack[4] . ", " . aOpenedPack[5]
+
+	If (bTradeMode) {
+		; Define a list of cards you want to end up with for a trade
+		aTradeCards := ["STSD_Luxray", "STSD_PachirisuEX", "STSP_Giratina", "STSP_Bastiodon", "STSP_Carnivine_1Star", "STSP_Rotom_1Star", "STSP_Rhyperior_1Star", "STSP_Croagunk_1Star", "STSP_Heatran_1Star", "STSP_Bidoof_1Star", "STSP_Regigigas_1Star"]
+
+		for i, card in aOpenedPack
+		{
+			for j, tradeCard in aTradeCards
+			{
+				if (card = tradeCard)
+				{
+					screenShot := Screenshot("DesiredCard")
+					LogToDiscord("Found a trade card!", screenShot, iDiscordID)
+					MsgBox, Found a trade card: %card%
+				}
+			}
+		}
+	}
 
 	iPackScore := getPackPoints(aOpenedPack)
 
@@ -1638,7 +1653,7 @@ DoTutorial() {
 
 	adbClick(140, 424)
 
-	FindImageAndClick(203, 273, 228, 290, , "Pack", 140, 424) ;wait for pack to be ready  to trace
+	FindImageAndClick(225, 273, 235, 290, , "Pack", 140, 424) ;wait for pack to be ready  to trace
 		if(setSpeed > 1) {
 			FindImageAndClick(65, 195, 100, 215, , "Platin", 18, 109, 2000) ; click mod settings
 			FindImageAndClick(9, 170, 25, 190, , "One", 26, 180) ; click mod settings
@@ -1649,7 +1664,7 @@ DoTutorial() {
 	Loop {
 		adbSwipe()
 		Sleep, 10
-		if (FindOrLoseImage(203, 273, 228, 290, , "Pack", 1, failSafeTime)){
+		if (FindOrLoseImage(225, 273, 235, 290, , "Pack", 1, failSafeTime)){
 			if(setSpeed > 1) {
 				if(setSpeed = 3)
 						FindImageAndClick(182, 170, 194, 190, , "Three", 187, 180) ; click 3x
@@ -1733,7 +1748,7 @@ DoTutorial() {
 	Delay(3)
 	adbClick(142, 436)
 
-	FindImageAndClick(203, 273, 228, 290, , "Pack", 239, 497) ;wait for pack to be ready  to Trace
+	FindImageAndClick(225, 273, 235, 290, , "Pack", 239, 497) ;wait for pack to be ready  to Trace
 	if(setSpeed > 1) {
 		FindImageAndClick(65, 195, 100, 215, , "Platin", 18, 109, 2000) ; click mod settings
 		FindImageAndClick(9, 170, 25, 190, , "One", 26, 180) ; click mod settings
@@ -1744,7 +1759,7 @@ DoTutorial() {
 	Loop {
 		adbSwipe()
 		Sleep, 10
-		if (FindOrLoseImage(203, 273, 228, 290, , "Pack", 1, failSafeTime)){
+		if (FindOrLoseImage(225, 273, 235, 290, , "Pack", 1, failSafeTime)){
 		if(setSpeed > 1) {
 			if(setSpeed = 3)
 						FindImageAndClick(182, 170, 194, 190, , "Three", 187, 180) ; click mod settings
@@ -1863,7 +1878,7 @@ PackOpening() {
 	Loop {
 		adbSwipe()
 		Sleep, 10
-		if (FindOrLoseImage(203, 273, 228, 290, , "Pack", 1, failSafeTime)){
+		if (FindOrLoseImage(225, 273, 235, 290, , "Pack", 1, failSafeTime)){
 		if(setSpeed > 1) {
 			if(setSpeed = 3)
 					FindImageAndClick(182, 170, 194, 190, , "Three", 187, 180) ; click mod settings
@@ -2106,27 +2121,30 @@ SelectPack(sStage := "HomeFree") {
 	; Check to determine which pack to open
 	switch sPackToOpen
 	{
-		case "Arceus":
+		case "Shining":
 			iPackX := 72
+			iPackY := 272
+		case "Arceus":
+			iPackX := 200
 			iPackY := 272
 		case "Dialga":
-			iPackX := 180
-			iPackY := 272
+			iPackX := 50
+			iPackY := 407
 		case "Palkia":
-			iPackX := 221
-			iPackY := 272
+			iPackX := 92
+			iPackY := 407
 		case "Mew":
-			iPackX := 72
-			iPackY := 407
-		case "Charizard":
-			iPackX := 160
-			iPackY := 407
-		case "Mewtwo":
 			iPackX := 200
 			iPackY := 407
+		case "Charizard":
+			iPackX := 30
+			iPackY := 515
+		case "Mewtwo":
+			iPackX := 73
+			iPackY := 515
 		case "Pikachu":
-			iPackX := 240
-			iPackY := 407
+			iPackX := 106
+			iPackY := 515
 	}
 
 	; Default 3rd pack farthest to the right on home screen
@@ -2136,23 +2154,23 @@ SelectPack(sStage := "HomeFree") {
 	switch sStage
 	{
 		case "HomeFree":
-			; Select default pack
+			; Click default pack until Points visible
 			aDefaultPack := [iDefaultPackX, iDefaultPackY], aPointsImgCoords := [233, 400, 264, 428], sPointsImgName := "Points"
 			ClickUntilImageVisible(aDefaultPack, aPointsImgCoords, sPointsImgName)
 
-			; Select Other Boosters
+			; Click Select Other Boosters until the X on Select Expansion is visible
 			aSelectExpansionBtn := [245, 475], aCloseBtnImg := [129, 497, 146, 515], sCloseBtnName := "CloseMissions"
 			ClickUntilImageVisible(aSelectExpansionBtn, aCloseBtnImg, sCloseBtnName)
 
-			; Select Desired sPackToOpen
+			; Click Desired sPackToOpen until points is visible
 			aOpenPack := [iPackX, iPackY], aPointsImgCoords := [233, 400, 264, 428], sPointsImgName := "Points"
 			ClickUntilImageVisible(aOpenPack, aPointsImgCoords, sPointsImgName)
 
-			; Click Desired Pack
-			aOpenPackBtn := [134, 266], aSkipImgCoords := [88, 413, 121, 439], sSkipImgName := "Button"
-			ClickUntilImageVisible(aOpenPackBtn, aSkipImgCoords, sSkipImgName)
+			; Click Desired Pack until points is no longer visible
+			aDesiredPack := [134, 266], aPointsImgCoords := [233, 400, 264, 428], sPointsImgName := "Points"
+			ClickUntilImageNotVisible(aDesiredPack, aPointsImgCoords, sPointsImgName)
 
-			; Click Open, Pack Carousel
+			; Click Open, Starting Pack Carousel until the skip arrow on bottom right is visible
 			aOpenPackBtn := [137, 434], aSkipImgCoords := [233, 486, 272, 519], sSkipImgName := "Skip2"
 			ClickUntilImageVisible(aOpenPackBtn, aSkipImgCoords, sSkipImgName)
 
@@ -2317,8 +2335,8 @@ CompleteMission(sMissionName) {
 	SkipLevelUp(bLeveled)
 
 	; Open Missions
-	aMissionsIcon := [261, 478], aBeginnerMissions := [2, 85, 34, 120], sBeginnerMissions := "Missions"
-	ClickUntilImageVisible(aMissionsIcon, aBeginnerMissions, sBeginnerMissions, 3)
+	aMissionsIcon := [261, 478], aBeginnerMissions := [7, 89, 36, 120], sBeginnerMissions := "Missions"
+	ClickUntilImageVisible(aMissionsIcon, aBeginnerMissions, sBeginnerMissions, 80)
 
 	; Select mission
 	switch sMissionName
@@ -2332,9 +2350,10 @@ CompleteMission(sMissionName) {
 	}
 	ClickImageWhenVisible(aMissionImgCoords, sMissionImgName)
 
-	; Complete the mission
-	aCompleteButton := [141, 444, 176, 452], sCompleteButton := "Button", iVariation := 80
-	ClickImageWhenVisible(aCompleteButton, sCompleteButton, iVariation)
+	; Click Complete button until the mission details page closes
+	aCompleteBtn := [137, 418], sMissionDetailsCords := [78, 139, 140, 161], sMissionDetailsImg := "MissionDetails"
+	ClickImageWhenVisible(sMissionDetailsCords, sMissionDetailsImg)
+	ClickUntilImageNotVisible(aCompleteBtn, sMissionDetailsCords, sMissionDetailsImg)
 
 	; Claim the mission reward
 	aOKButton := [141, 365, 176, 374], sOKButton := "Button", iVariation := 80
@@ -2623,18 +2642,6 @@ OpenPacks() {
 	; Level Up: +12
 	; Pack 13 --> From Level Up
 }
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
